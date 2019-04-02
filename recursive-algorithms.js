@@ -102,7 +102,7 @@ function factorial(num) {
 //console.log(factorial(5));
 
 
-let maze = [
+let defaultMaze = [
   [' ', ' ', ' ', '*', ' ', ' ', ' '],
   ['*', '*', ' ', '*', ' ', '*', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -112,49 +112,51 @@ let maze = [
 //start: maze[0][0]
 //end: maze[5][7]
 
-function solveMaze(maze, col = 0, row =0, starting = maze[col][row]) {
+function solveMaze(maze, row = 0, col =0) {
   //no space in all directions - GET OUT NOW -- print current location
 
-  if (maze[col + 1][row] === 'e') {
-    maze[col][row] = 'd';
+  if (col+1 <= 6 && maze[row][col + 1] === 'e') {
+    maze[row][col] = 'r';
+    console.log(maze);
     return maze;
   }
-  if (maze[col][row + 1] === 'e') {
-    maze[col][row] = 'r';
+  if (row + 1 <= 4 && maze[row+1][col] === 'e') {
+    maze[row][col] = 'd';
+    console.log(maze);
     return maze;
   }
 
-  const isRight = (row >= 6) ? false : maze[col][row+1] === ' ';
-  const isDown = (col >= 4) ? false : maze[col + 1 ][row] === ' ';
-  //cant happe if row is 0
-  const isLeft = (row <= 0) ? false : maze[col][row -1] === ' ';
-  // cant happen if col is 0
-  const isUp = (col <= 0) ? false : maze[col - 1][row] === ' ';
-
+  const isRight = (col >= 6) ? false : maze[row][col + 1] === ' ';
+  const isDown = (row >= 4) ? false : maze[row + 1 ][col] === ' ';
+  //cant happe if col is 0
+  const isLeft = (col <= 0) ? false : maze[row][col -1] === ' ';
+  // cant happen if row is 0
+  const isUp = (row <= 0) ? false : maze[row - 1][col] === ' ';
+  let newMaze;
   if (isRight) {
-    maze[col].splice(row,1,'r');
-    row += 1;
-    return solveMaze(maze, col, row, starting = maze[col][row]);
+    newMaze = maze.slice(0).map(row => row.slice(0)); 
+    newMaze[row].splice(col,1,'r');
+    solveMaze(newMaze, row, col+1);
   }
   if (isDown) {
-    maze[col].splice(row, 1, 'd');
-    col += 1;
-    return solveMaze(maze, col, row, starting = maze[col][row]);
+    newMaze = maze.slice(0).map(row => row.slice(0));
+    newMaze[row].splice(col, 1, 'd');
+    solveMaze(newMaze, row+1, col);
   }
   if (isLeft) {
-    maze[col].splice(row, 1, 'l');
-    row -= 1;
-    return solveMaze(maze, col, row, starting = maze[col][row]);
+    newMaze = maze.slice(0).map(row => row.slice(0));
+    newMaze[row].splice(col, 1, 'l');
+    solveMaze(newMaze, row, col-1);
   }
   if (isUp) {
-    maze[col].splice(row, 1, 'u');
-    col -= 1;
-    return solveMaze(maze, col, row, starting = maze[col][row]);
+    newMaze = maze.slice(0).map(row => row.slice(0));
+    newMaze[row].splice(col, 1, 'u');
+    solveMaze(newMaze, row-1, col);
   }
 
 }
 
-//console.log(solveMaze(maze));
+console.log(solveMaze(defaultMaze));
 
 /*PROBLEM 9 
 Path to the exit: RRDDLLDDRRRRRR
@@ -183,7 +185,7 @@ function anagram(word) {
   return solution;
 }
 
-console.log(anagram('east').length);
+//console.log(anagram('east').length);
 
 /* problem 11 */
 
